@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "Test Vue",
+  "name": "Figma Token Inspector",
   "version": "1.0.0",
-  "description": "Test Vite Plugin Extension with Vue",
+  "description": "Figma Token Inspector in view only mode",
   "icons": {
     "16": "assets/icons/logo.svg",
     "48": "assets/icons/logo.svg",
