@@ -19,6 +19,9 @@ export default defineConfig({
       manifest: root('src/manifest.json'),
       assets: 'assets',
       browser: process.env.TARGET,
+      additionalInputs: [
+        'figma-bridge.ts'
+      ],
       webExtConfig: {
         chromium: 'chromium',
       },

@@ -11,6 +11,9 @@
   "browser_action": {
     "default_popup": "popup/index.html"
   },
+  "web_accessible_resources": [
+    "figma-bridge.js"
+  ],
   "content_scripts": [
     {
       "matches": [
