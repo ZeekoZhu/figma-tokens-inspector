@@ -882,11 +882,6 @@ combined-stream@^1.0.6, combined-stream@~1.0.6:
   dependencies:
     delayed-stream "~1.0.0"
 
-comlink@^4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/comlink/-/comlink-4.3.1.tgz#0c6b9d69bcd293715c907c33fe8fc45aecad13c5"
-  integrity sha512-+YbhUdNrpBZggBAHWcgQMLPLH1KDF3wJpeqrCKieWQ8RL7atmgsgTQko1XEBK6PsecfopWNntopJ+ByYG1lRaA==
-
 commander@2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.9.0.tgz#9c99094176e12240cb22d6c5146098400fe0f7d4"
@@ -3563,6 +3558,11 @@ web-ext@^6.5.0:
     ws "7.4.6"
     yargs "16.2.0"
     zip-dir "2.0.0"
+
+webext-messaging@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/webext-messaging/-/webext-messaging-1.0.2.tgz#c6e50d75858c9bb69ce92abefc825d45cb076d5e"
+  integrity sha512-Ax0INx2dS5Lt1a6+Hhpzq/9QepqBX++sxORALtijqUidpwtrYulWXOlMh70dXB4tSV910WEmFmvXblaNGmP3YA==
 
 when@3.7.7:
   version "3.7.7"
