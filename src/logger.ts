@@ -7,6 +7,7 @@ loglevel.methodFactory = function (methodName, level, loggerName) {
   return function (...args) {
     if (typeof loggerName === 'string') {
       rawMethod(`[${loggerName}]`, ...args);
+      return;
     }
     rawMethod(...args);
   };
