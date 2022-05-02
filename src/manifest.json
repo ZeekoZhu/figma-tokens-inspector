@@ -25,6 +25,7 @@
     }
   ],
   "permissions": [
+    "storage",
     "tabs",
     "{{firefox}}.<all_urls>",
     "{{chrome}}.activeTab"
