@@ -13,6 +13,9 @@ export default defineConfig({
     outDir: root('dist'),
     emptyOutDir: true,
   },
+  optimizeDeps: {
+    include: ['react/jsx-runtime', 'react-dom'],
+  },
   plugins: [
     react(),
     browserExtension({
