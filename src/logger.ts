@@ -15,6 +15,8 @@ loglevel.methodFactory = function (methodName, level, loggerName) {
 
 export const content = loglevel.getLogger('FTI.content');
 export const bridge = loglevel.getLogger('FTI.bridge');
+export const popup = loglevel.getLogger('FTI.popup');
 
 content.setLevel('debug');
 bridge.setLevel('debug');
+popup.setLevel('debug');

@@ -4,11 +4,13 @@
   "version": "0.0.0",
   "dependencies": {
     "@mantine/core": "^4.2.2",
+    "@mantine/form": "^4.2.2",
     "@mantine/hooks": "^4.2.2",
     "loglevel": "^1.8.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "webext-messaging": "^1.0.2"
+    "webext-messaging": "^1.0.2",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.183",
