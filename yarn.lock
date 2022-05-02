@@ -2669,6 +2669,16 @@ mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.6"
 
+mobx-react-lite@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-3.3.0.tgz#7174e807201943beff6f9d3701492314c9fc0db3"
+  integrity sha512-U/kMSFtV/bNVgY01FuiGWpRkaQVHozBq5CEBZltFvPt4FcV111hEWkgwqVg9GPPZSEuEdV438PEz8mk8mKpYlA==
+
+mobx@^6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.5.0.tgz#dc2d028b1882737f6e813fc92454381e438b7ad3"
+  integrity sha512-pHZ/cySF00FVENDWIDzJyoObFahK6Eg4d0papqm6d7yMkxWTZ/S/csqJX1A3PsYy4t5k3z2QnlwuCfMW5lSEwA==
+
 moment@^2.19.3:
   version "2.29.3"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.3.tgz#edd47411c322413999f7a5940d526de183c031f3"
@@ -3878,10 +3888,22 @@ web-ext@^6.5.0:
     yargs "16.2.0"
     zip-dir "2.0.0"
 
+webext-detect-page@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/webext-detect-page/-/webext-detect-page-4.0.1.tgz#124a6802c872fa0bc12549d99b2dd53d18af2ba7"
+  integrity sha512-Y9Skw6/Uj0dGwOIidc1XqZ3neEbmuuT4BlkL/J4JHAo6fVznHIZq6/MWDsPGOA/jnNowiSXtHHh4S/TOxbl6bQ==
+
 webext-messaging@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/webext-messaging/-/webext-messaging-1.0.2.tgz#c6e50d75858c9bb69ce92abefc825d45cb076d5e"
   integrity sha512-Ax0INx2dS5Lt1a6+Hhpzq/9QepqBX++sxORALtijqUidpwtrYulWXOlMh70dXB4tSV910WEmFmvXblaNGmP3YA==
+
+webext-options-sync@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/webext-options-sync/-/webext-options-sync-3.1.0.tgz#030c4c367cfd8e939da2be262346cb49594e3fe6"
+  integrity sha512-oQAx6V8V4lkGv51KBcUsvBnckwT+T/EkgCxpOKd9K9syc0eJuwfIYooa5Gcrv+uMQtdhf4wjZ9glJQRiNIQGVg==
+  dependencies:
+    webext-detect-page "^4.0.0"
 
 when@3.7.7:
   version "3.7.7"

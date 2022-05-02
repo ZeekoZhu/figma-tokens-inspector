@@ -26,7 +26,9 @@ export default defineConfig({
         'figma-bridge.ts'
       ],
       webExtConfig: {
-        chromium: 'chromium',
+        chromiumProfile: './.cache/chromium-profile',
+        profileCreateIfMissing: true,
+        keepProfileChanges: true
       },
       verbose: true,
     }),

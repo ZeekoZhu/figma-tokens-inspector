@@ -1,14 +1,13 @@
 import { Button, Group, TextInput } from '@mantine/core';
 import { useForm, yupResolver } from '@mantine/form';
 import * as Yup from 'yup';
-import { popup as log } from '../../../logger';
+import { useOptions } from '../../services/options-services';
 
 const githubProviderInfoFormSchema = Yup.object().shape({
   githubPat: Yup.string().required(),
   repoOwner: Yup.string().required(),
   repoName: Yup.string().required(),
   filePath: Yup.string().required(),
-  fileName: Yup.string().required(),
 });
 export const GitHubProviderSettings = () => {
   const form = useForm({
@@ -21,9 +20,10 @@ export const GitHubProviderSettings = () => {
       branch: '',
     },
   });
+  const { githubOptions } = useOptions();
   return (
     <form onSubmit={form.onSubmit(values => {
-      log.debug('submit', values);
+      githubOptions.updateOptions(values);
     })}>
       <TextInput label="GitHub Personal Access Token" mt="sm" {...form.getInputProps('githubPat')}/>
       <TextInput label="Repo Owner" mt="sm" {...form.getInputProps('repoOwner')}/>
