@@ -1,26 +1,13 @@
 import { Button, Group, TextInput } from '@mantine/core';
 import { useForm, yupResolver } from '@mantine/form';
-import * as Yup from 'yup';
-import { useOptions } from '../../services/options-services';
+import { useOptions, GitHubOptionsStore } from '../../services';
 
-const githubProviderInfoFormSchema = Yup.object().shape({
-  githubPat: Yup.string().required(),
-  repoOwner: Yup.string().required(),
-  repoName: Yup.string().required(),
-  filePath: Yup.string().required(),
-});
 export const GitHubProviderSettings = () => {
-  const form = useForm({
-    schema: yupResolver(githubProviderInfoFormSchema),
-    initialValues: {
-      githubPat: '',
-      repoOwner: '',
-      repoName: '',
-      filePath: '',
-      branch: '',
-    },
-  });
   const { githubOptions } = useOptions();
+  const form = useForm({
+    schema: yupResolver(GitHubOptionsStore.schema),
+    initialValues: githubOptions.options,
+  });
   return (
     <form onSubmit={form.onSubmit(values => {
       githubOptions.updateOptions(values);
