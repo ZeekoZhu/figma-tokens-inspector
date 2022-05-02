@@ -1,6 +1,6 @@
 import { Button, Group, TextInput } from '@mantine/core';
 import { useForm, yupResolver } from '@mantine/form';
-import { useOptions, GitHubOptionsStore } from '../../services';
+import { useOptions, GitHubOptionsStore } from '../../stores';
 
 export const GitHubProviderSettings = () => {
   const { githubOptions } = useOptions();

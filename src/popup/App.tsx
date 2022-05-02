@@ -1,7 +1,7 @@
 import { Container, MantineProvider, Tabs } from '@mantine/core';
 import { useAppStyles } from './App.style';
 import { SettingsPage } from './pages/settings/settings-page';
-import { OptionsProvider } from './services';
+import { OptionsProvider } from './stores';
 
 function App() {
   const { classes } = useAppStyles();
