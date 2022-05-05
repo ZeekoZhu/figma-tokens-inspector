@@ -57,6 +57,7 @@ function App() {
         return;
       case ContentScript.NODE_SELECTED:
         popup.debug('node selected', msg.payload);
+        figmaFileManager.selectNodes(msg.payload.nodeIdList);
         return;
     }
   }, []);
