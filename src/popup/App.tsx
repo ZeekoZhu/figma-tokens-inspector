@@ -1,11 +1,17 @@
 import { Container, MantineProvider, Tabs } from '@mantine/core';
+import { autorun } from 'mobx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ContentScript } from '../events';
 import { popup } from '../logger';
 import { useAppStyles } from './App.style';
 import { InspectorPage } from './pages/inspector';
 import { SettingsPage } from './pages/settings/settings-page';
-import { FigmaFileContext, OptionsProvider } from './stores';
+import {
+  FigmaFileContext,
+  FigmaOptionsStore,
+  GitHubOptionsStore,
+  OptionsContext
+} from './stores';
 import {
   createConnector,
   ContentScriptMsgHandler, ContentScriptMsgTypes
@@ -41,21 +47,28 @@ const useSingleton = <T, >(factory: () => T) => {
 function App() {
   const { classes } = useAppStyles();
   const figmaFileManager = useSingleton(() => new FigmaFileManager());
+  const figmaOptions = useSingleton(() => new FigmaOptionsStore());
+  const githubOptions = useSingleton(() => new GitHubOptionsStore());
   const onMessage = useCallback((msg: ContentScriptMsgTypes) => {
     switch (msg.type) {
       case ContentScript.FILE_OPENED:
         popup.debug('file opened', msg.payload);
-        figmaFileManager.fileId = msg.payload.fileId;
+        figmaFileManager.setFileId(msg.payload.fileId);
         return;
       case ContentScript.NODE_SELECTED:
         popup.debug('node selected', msg.payload);
         return;
     }
   }, []);
+  useEffect(() => {
+    return autorun(() => {
+      figmaFileManager.setToken(figmaOptions.options.pat);
+    });
+  }, []);
   useContentScriptMsg(onMessage);
   return (
     <FigmaFileContext.Provider value={figmaFileManager}>
-      <OptionsProvider>
+      <OptionsContext.Provider value={{ githubOptions, figmaOptions }}>
         <MantineProvider>
           <Container className={classes.root}>
             <Tabs grow>
@@ -68,7 +81,7 @@ function App() {
             </Tabs>
           </Container>
         </MantineProvider>
-      </OptionsProvider>
+      </OptionsContext.Provider>
     </FigmaFileContext.Provider>
   );
 }

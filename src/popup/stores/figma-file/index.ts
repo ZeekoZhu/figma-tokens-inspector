@@ -15,6 +15,14 @@ export class FigmaFileManager {
     });
   }
 
+  setToken(token: string) {
+    this.token = token;
+  }
+
+  setFileId(fileId: string) {
+    this.fileId = fileId;
+  }
+
   async loadFile() {
     if (!this.token || !this.fileId) {
       return;
