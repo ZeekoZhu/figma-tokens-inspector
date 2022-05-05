@@ -1,3 +1,4 @@
+import { shareReplay, Subject } from 'rxjs';
 import { ContentScript, Popup } from '../../events';
 import { popup } from '../../logger';
 import Port = chrome.runtime.Port;
@@ -18,15 +19,26 @@ export const getCurrentTab = (): Promise<chrome.tabs.Tab> => {
     });
   });
 };
-const tab = await getCurrentTab();
-const port = chrome.tabs.connect(tab.id!, { name: 'FROM_POPUP' });
+
+export const createConnector = async () => {
+
+  const tab = await getCurrentTab();
+  popup.debug('connect to tab:', tab);
+  const port = chrome.tabs.connect(tab.id!, { name: 'FROM_POPUP' });
+  const $msg = new Subject<ContentScriptMsgTypes>();
+  port.onMessage.addListener(msg => {
+    $msg.next(msg);
+  });
+  const msg$ = $msg.pipe(shareReplay(1));
+  const connectContentScript = ({ onMessage }: { onMessage: ContentScriptMsgHandler }) => {
+    port.postMessage({ type: Popup.POPUP_OPENED });
+    const sub = msg$.subscribe(onMessage);
+    return () => sub.unsubscribe();
+  };
+  return { connectContentScript, port };
+};
 
 export type ContentScriptMsgHandler = (msg: ContentScriptMsgTypes) => void;
-export const connectContentScript = ({ onMessage }: { onMessage: ContentScriptMsgHandler }) => {
-  port.postMessage({ type: Popup.POPUP_OPENED });
-  port.onMessage.addListener(onMessage);
-  return () => port.onMessage.removeListener(onMessage);
-};
 
 export const sendExtensionMsg = (port: Port) => (msg: ContentScriptMsgTypes) => {
   port.postMessage(msg);

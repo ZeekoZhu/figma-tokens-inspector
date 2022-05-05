@@ -1,4 +1,8 @@
-import { combineLatest, shareReplay, Subject } from 'rxjs';
+import {
+  combineLatest, shareReplay,
+  Subject,
+  takeUntil
+} from 'rxjs';
 import { ContentScript, FigmaBridge, Popup } from '../events';
 import { content as log } from '../logger';
 import { sendExtensionMsg } from '../popup/stores/extension-bridge';
@@ -13,12 +17,24 @@ const startInspect$ = combineLatest([$fileId, $popupOpen]).pipe(
   shareReplay(1),
 );
 
-chrome.runtime.onConnect.addListener(port => {
+startInspect$.subscribe();
+
+function setupPopupMessaging(port: chrome.runtime.Port) {
+  if (port.name !== 'FROM_POPUP') {
+    return;
+  }
+  log.debug('Connected from popup', port);
   const sendMsg = sendExtensionMsg(port);
-  startInspect$.subscribe(([fileId]) => {
+  const $unsub = new Subject<void>();
+  startInspect$.pipe(
+    takeUntil($unsub),
+  ).subscribe(([fileId]) => {
+    log.debug('Inspecting file', fileId);
     sendMsg({ type: ContentScript.FILE_OPENED, payload: { fileId } });
   });
-  $nodeSelected.subscribe(nodes => {
+  $nodeSelected.pipe(
+    takeUntil($unsub),
+  ).subscribe(nodes => {
     sendMsg({
       type: ContentScript.NODE_SELECTED,
       payload: { nodeIdList: nodes }
@@ -30,8 +46,16 @@ chrome.runtime.onConnect.addListener(port => {
       $popupOpen.next();
     }
   });
-});
+  port.onDisconnect.addListener(() => {
+    log.debug('Disconnected from popup');
+    $unsub.next();
+    $unsub.complete();
+  });
+}
 
+chrome.runtime.onConnect.addListener(port => {
+  setupPopupMessaging(port);
+});
 
 loadBridge();
 
