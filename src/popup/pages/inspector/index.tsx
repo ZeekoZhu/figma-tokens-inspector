@@ -9,17 +9,37 @@ import { useInspectorStyles } from './styles';
 
 export const InspectorPage = observer(() => {
   const figmaFileManager = useService('figmaFileManager');
+  if (figmaFileManager.fileId == null) {
+    return (
+      <Group position="center" px={16}>
+        <Text>Waiting for Figma ready...</Text>
+      </Group>
+    );
+  }
   if (figmaFileManager.loading) {
     return (
       <Group position="center" px={16}>
         <Loader/>
-        <Text>Loading...</Text>
+        <Text>Loading current file...</Text>
+      </Group>
+    );
+  }
+  if (figmaFileManager.selectedNodeIdList.length === 0) {
+    return (
+      <Group position="center" px={16}>
+        <Text>Select node in Figma canvas to inspect Design Token</Text>
+      </Group>
+    );
+  }
+  if (figmaFileManager.selectedNodes.length === 0) {
+    return (
+      <Group position="center" px={16}>
+        <Text>No token found in selected nodes</Text>
       </Group>
     );
   }
   return (
     <Stack mb={16}>
-      <Text size="md">File Id: {figmaFileManager.fileId}</Text>
       <NodeTokensList/>
     </Stack>
   );
@@ -34,7 +54,7 @@ const NodeTokensList = observer(() => {
     <Stack className={classnames(classes.tokenList, 'fti-node-list')}
            px={theme.spacing.md}>
       {nodes.map((node) =>
-        <NodeTokensPreview {...node} />)}
+        <NodeTokensPreview key={node.id} {...node} />)}
     </Stack>
   );
 });
@@ -54,15 +74,17 @@ const NodeTokensPreview = (node: Figma.Node) => {
   );
 };
 
+const trimQuotes = (str: string) => str.replace(/^['"]|['"]$/g, '');
+
 const DesignTokenPreview =
   ({
      nodeProp,
      value
    }: { nodeProp: string, value: string }) => {
     return (
-      <Group spacing={8}>
-        <Text size="sm" className="fti-prop-name">{nodeProp}:</Text>
-        <Text size="sm" className="fti-token-name">{value}</Text>
-      </Group>
+      <Stack spacing={0}>
+        <Text size="sm" className="fti-prop-name">{nodeProp}</Text>
+        <Text size="sm" className="fti-token-name">{trimQuotes(value)}</Text>
+      </Stack>
     );
   };
