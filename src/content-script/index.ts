@@ -1,12 +1,14 @@
 import {
   combineLatest, shareReplay,
-  Subject,
-  takeUntil
+  Subject
 } from 'rxjs';
-import { ContentScript, FigmaBridge, Popup } from '../events';
+import { ContentScript, FigmaBridge } from '../events';
 import { content as log } from '../logger';
-import { sendExtensionMsg } from '../popup/stores/extension-bridge';
+import {
+  ContentScriptMsgTypes,
+} from '../popup/stores/extension-bridge';
 import { loadBridge } from './bridge-loader';
+import { initInspectorWidget } from './inspector-widget';
 
 log.debug('Content script loaded');
 
@@ -17,45 +19,26 @@ const startInspect$ = combineLatest([$fileId, $popupOpen]).pipe(
   shareReplay(1),
 );
 
-startInspect$.subscribe();
-
-function setupPopupMessaging(port: chrome.runtime.Port) {
-  if (port.name !== 'FROM_POPUP') {
-    return;
-  }
-  log.debug('Connected from popup', port);
-  const sendMsg = sendExtensionMsg(port);
-  const $unsub = new Subject<void>();
+function setupPopupMessaging() {
+  const $popupMsg = new Subject<ContentScriptMsgTypes>();
+  const sendMsg = (msg: ContentScriptMsgTypes) => {
+    $popupMsg.next(msg);
+  };
   startInspect$.pipe(
-    takeUntil($unsub),
   ).subscribe(([fileId]) => {
     log.debug('Inspecting file', fileId);
     sendMsg({ type: ContentScript.FILE_OPENED, payload: { fileId } });
   });
   $nodeSelected.pipe(
-    takeUntil($unsub),
   ).subscribe(nodes => {
     sendMsg({
       type: ContentScript.NODE_SELECTED,
       payload: { nodeIdList: nodes }
     });
   });
-  port.onMessage.addListener(msg => {
-    log.debug('Received message from extension:', msg);
-    if (msg.type === Popup.POPUP_OPENED) {
-      $popupOpen.next();
-    }
-  });
-  port.onDisconnect.addListener(() => {
-    log.debug('Disconnected from popup');
-    $unsub.next();
-    $unsub.complete();
-  });
-}
 
-chrome.runtime.onConnect.addListener(port => {
-  setupPopupMessaging(port);
-});
+  return $popupMsg.asObservable();
+}
 
 loadBridge();
 
@@ -71,5 +54,10 @@ window.addEventListener('message', (event) => {
   }
 });
 
+initInspectorWidget({
+  msg$: setupPopupMessaging(), onBootstrap: () => {
+    $popupOpen.next();
+  }
+});
 
 export {};

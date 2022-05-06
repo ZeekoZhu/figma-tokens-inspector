@@ -1,10 +1,11 @@
 import { Button, Group, TextInput } from '@mantine/core';
 import { useForm, yupResolver } from '@mantine/form';
 import { isEqual } from 'lodash-es';
-import { FigmaOptionsStore, useOptions } from '../../stores';
+import { useService } from '../../bootstrap';
+import { FigmaOptionsStore} from '../../stores';
 
 export const FigmaSettings = () => {
-  const { figmaOptions } = useOptions();
+  const figmaOptions  = useService('figmaOptions');
   const form = useForm({
     schema: yupResolver(FigmaOptionsStore.schema),
     initialValues: figmaOptions.options,

@@ -1,7 +1,6 @@
 import * as Figma from 'figma-js';
 import { Client } from 'figma-js';
 import { makeAutoObservable, observable, reaction, runInAction } from 'mobx';
-import { createContext } from 'react';
 import { popup } from '../../../logger';
 
 class DocumentHelper {
@@ -45,6 +44,9 @@ export class FigmaFileManager {
   }
 
   get selectedNodes() {
+    if(!this.docHelper) {
+      return [];
+    }
     return this.selectedNodeIdList.map(id => this.docHelper!.getNodeById(id)!).filter(node => !!node);
   }
 
@@ -89,4 +91,3 @@ export class FigmaFileManager {
   }
 }
 
-export const FigmaFileContext = createContext(null as any as FigmaFileManager);

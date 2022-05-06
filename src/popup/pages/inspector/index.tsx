@@ -1,12 +1,10 @@
 import { Group, Loader, Stack, Text } from '@mantine/core';
 import { observer } from 'mobx-react-lite';
-import { useContext } from 'react';
 import { popup } from '../../../logger';
-
-import { FigmaFileContext } from '../../stores';
+import { useService } from '../../bootstrap';
 
 export const InspectorPage = observer(() => {
-  const figmaFileManager = useContext(FigmaFileContext);
+  const figmaFileManager = useService('figmaFileManager');
   if (figmaFileManager.loading) {
     return (
       <Group position="center">
@@ -24,7 +22,7 @@ export const InspectorPage = observer(() => {
 });
 
 const NodeTokensList = observer(() => {
-  const figmaFileManager = useContext(FigmaFileContext);
+  const figmaFileManager = useService('figmaFileManager');
   const nodes = figmaFileManager.selectedNodes;
   popup.debug('nodes', nodes);
   return (
