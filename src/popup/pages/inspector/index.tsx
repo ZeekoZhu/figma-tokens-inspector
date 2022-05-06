@@ -31,7 +31,7 @@ export const InspectorPage = observer(() => {
       </Group>
     );
   }
-  if (figmaFileManager.selectedNodes.length === 0) {
+  if (figmaFileManager.selectedNodes.flatMap(extractTokens).length === 0) {
     return (
       <Group position="center" px={16}>
         <Text>No token found in selected nodes</Text>
@@ -59,8 +59,10 @@ const NodeTokensList = observer(() => {
   );
 });
 
+const extractTokens = (node: Figma.Node) => entries(node.sharedPluginData?.tokens).filter(([key, value]) => value !== undefined && key !== 'version');
+
 const NodeTokensPreview = (node: Figma.Node) => {
-  const tokens = entries(node.sharedPluginData?.tokens).filter(([key, value]) => value !== undefined && key !== 'version');
+  const tokens = extractTokens(node);
   if (tokens.length === 0) {
     return null;
   }
