@@ -1,7 +1,7 @@
 import * as Figma from 'figma-js';
-import { Client } from 'figma-js';
 import { makeAutoObservable, observable, reaction, runInAction } from 'mobx';
 import { popup } from '../../../logger';
+import { FigmaClient } from '../../services';
 
 class DocumentHelper {
   nodeIdMap = new Map<string, Figma.Node>();
@@ -34,7 +34,7 @@ export class FigmaFileManager {
   docHelper?: DocumentHelper;
 
 
-  constructor() {
+  constructor(private figmaClient: FigmaClient) {
     makeAutoObservable(this, {
       document: observable.ref
     });
@@ -44,7 +44,7 @@ export class FigmaFileManager {
   }
 
   get selectedNodes() {
-    if(!this.docHelper) {
+    if (!this.docHelper) {
       return [];
     }
     return this.selectedNodeIdList.map(id => this.docHelper!.getNodeById(id)!).filter(node => !!node);
@@ -68,20 +68,15 @@ export class FigmaFileManager {
     if (!this.token || !this.fileId) {
       return;
     }
-    const client = Client({
-      personalAccessToken: this.token,
-    });
     try {
       runInAction(() => {
         this.loading = true;
       });
-      const result = await client.file(this.fileId!, {
-        plugin_data: 'shared'
-      });
+      const result = await this.figmaClient.getFile(this.fileId, this.token);
       runInAction(() => {
-        this.document = result.data.document;
-        popup.debug('Plugin data', result.data);
-        this.docHelper = new DocumentHelper(result.data.document);
+        this.document = result;
+        popup.debug('Plugin data', result);
+        this.docHelper = new DocumentHelper(result);
       });
     } finally {
       runInAction(() => {
