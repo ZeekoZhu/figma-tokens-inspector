@@ -17,7 +17,7 @@ ts: node_modules
 
 dev: ts
 	export TARGET=$(browser)
-	vite dev
+	vite build --watch
 
 validate: build
 	web-ext lint -s dist
