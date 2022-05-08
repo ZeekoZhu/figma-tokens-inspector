@@ -1,9 +1,10 @@
 import { defineConfig, UserConfig } from 'vite';
-import { dirname, relative } from 'path';
+import { crx } from '@crxjs/vite-plugin';
 import react from '@vitejs/plugin-react';
 import AutoImport from 'unplugin-auto-import/vite';
 
-import { isDev, port, r } from './scripts/utils';
+import { isDev, r } from './scripts/utils';
+import { getManifest } from './scripts/manifest';
 
 export const sharedConfig: UserConfig = {
   root: r('src'),
@@ -20,21 +21,12 @@ export const sharedConfig: UserConfig = {
   },
   plugins: [
     react(),
-    // rewrite assets to use relative path
-    {
-      name: 'assets-rewrite',
-      enforce: 'post',
-      apply: 'build',
-      transformIndexHtml(html, { path }) {
-        return html.replace(/"\/assets\//g, `"${relative(dirname(path), '/assets')}/`);
-      },
-    },
     AutoImport({
       imports: [
         'react',
         {
           'webextension-polyfill': [
-            ['*', 'browser'],
+            [ '*', 'browser' ],
           ],
         },
       ],
@@ -42,35 +34,17 @@ export const sharedConfig: UserConfig = {
     }),
   ],
 };
-
-export default defineConfig(({ command }) => ({
+// bundling the content script using Vite
+export default defineConfig(async () => ({
   ...sharedConfig,
-  base: command === 'serve' ? `http://localhost:${port}/` : '/dist/',
-  server: {
-    port,
-    hmr: {
-      host: 'localhost',
-    },
-  },
-  build: {
-    outDir: r('extension/dist'),
-    emptyOutDir: false,
-    sourcemap: isDev ? 'inline' : false,
-    // https://developer.chrome.com/docs/webstore/program_policies/#:~:text=Code%20Readability%20Requirements
-    terserOptions: {
-      mangle: false,
-    },
-    rollupOptions: {
-      input: {
-        background: r('src/background/index.html'),
-      },
-    },
-  },
   plugins: [
     ...sharedConfig.plugins!,
+    crx({
+      manifest: await getManifest(),
+    }),
   ],
-  test: {
-    globals: true,
-    environment: 'jsdom',
+  build: {
+    outDir: r('extension'),
+    emptyOutDir: true,
   },
 }));

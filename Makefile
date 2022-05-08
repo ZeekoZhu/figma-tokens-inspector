@@ -17,14 +17,10 @@ dev-content-script: node_modules
 	@vite build --config vite.config.content.ts --mode development
 
 dev:
-	@make -j prepare dev-pages dev-content-script
+	@vite
 
 start-chromium:
 	@web-ext run --source-dir extension --target chromium \
 		--keep-profile-changes \
 		--profile-create-if-missing \
 		--chromium-profile ./.cache/chromium-profile
-
-clean:
-	@rm -rf dist
-	rm -rf extension
