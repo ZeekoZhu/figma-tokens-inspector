@@ -1,40 +1,44 @@
 import {
   MantineProvider,
   Paper,
-  Tabs
+  Tabs,
 } from '@mantine/core';
 import classnames from 'classnames';
 import Draggable from 'react-draggable';
 import { useAppStyles } from './App.style';
 import { InspectorPage } from './pages/inspector';
 import { SettingsPage } from './pages/settings/settings-page';
+import { useRef } from 'react';
 
 function App() {
   const { classes } = useAppStyles();
+  const containerRef = useRef<HTMLDivElement>(null);
   return (
     <MantineProvider>
-      <Draggable handle=".drag-handle" bounds="body">
-        <Paper className={classes.root} shadow="md">
-          <TitleBar/>
-          <Tabs grow>
-            <Tabs.Tab label="Inspect">
-              <InspectorPage/>
-            </Tabs.Tab>
-            <Tabs.Tab label="Settings">
-              <SettingsPage/>
-            </Tabs.Tab>
-          </Tabs>
-        </Paper>
+      <Draggable handle=".drag-handle" bounds="body" nodeRef={containerRef}>
+        <div ref={containerRef} className={classes.root}>
+          <Paper shadow="md">
+            <TitleBar />
+            <Tabs grow>
+              <Tabs.Tab label="Inspect">
+                <InspectorPage />
+              </Tabs.Tab>
+              <Tabs.Tab label="Settings">
+                <SettingsPage />
+              </Tabs.Tab>
+            </Tabs>
+          </Paper>
+        </div>
       </Draggable>
     </MantineProvider>
   );
 }
 
-const TitleBar = () => {
+const TitleBar = forwardRef<HTMLDivElement>(({}, ref) => {
   const { classes } = useAppStyles();
   return (
-    <div className={classnames(classes.titleBar, 'drag-handle')}></div>
+    <div ref={ref} className={classnames(classes.titleBar, 'drag-handle')}></div>
   );
-};
+});
 
 export default App;
