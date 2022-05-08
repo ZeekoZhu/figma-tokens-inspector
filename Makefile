@@ -3,21 +3,28 @@ SHELL := /bin/bash
 .ONESHELL:
 .SHELLFLAGS = -ec
 
-browser ?= chromium
-
-build: ts
-	export TARGET=$(browser)
-	vite build
-
 node_modules: package.json yarn.lock
 	yarn install --frozen-lockfile
 
-ts: node_modules
-	tsc
+prepare: node_modules
+	@esno ./scripts/prepare.ts
+	cp -r src/assets/* extension/assets/
 
-dev: ts
-	export TARGET=$(browser)
-	vite build --watch
+dev-pages: node_modules
+	@vite
 
-validate: build
-	web-ext lint -s dist
+dev-content-script: node_modules
+	@vite build --config vite.config.content.ts --mode development
+
+dev:
+	@make -j prepare dev-pages dev-content-script
+
+start-chromium:
+	@web-ext run --source-dir extension --target chromium \
+		--keep-profile-changes \
+		--profile-create-if-missing \
+		--chromium-profile ./.cache/chromium-profile
+
+clean:
+	@rm -rf dist
+	rm -rf extension
