@@ -1,5 +1,5 @@
 import * as Figma from 'figma-js';
-import { makeAutoObservable, observable, reaction, runInAction } from 'mobx';
+import { action, makeAutoObservable, observable, reaction, runInAction } from 'mobx';
 import { popup } from '~/logger';
 import { FigmaClient } from '../../services';
 
@@ -24,7 +24,6 @@ class DocumentHelper {
   }
 }
 
-
 export class FigmaFileManager {
   token?: string;
   fileId?: string;
@@ -33,12 +32,12 @@ export class FigmaFileManager {
   selectedNodeIdList: string[] = [];
   docHelper?: DocumentHelper;
 
-
   constructor(private figmaClient: FigmaClient) {
     makeAutoObservable(this, {
-      document: observable.ref
+      document: observable.ref,
+      setToken: action,
     });
-    reaction(() => [this.token, this.fileId], async () => {
+    reaction(() => [ this.token, this.fileId ], async () => {
       await this.loadFile();
     });
   }
