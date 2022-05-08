@@ -1,6 +1,6 @@
 import * as Figma from 'figma-js';
 import { makeAutoObservable, observable, reaction, runInAction } from 'mobx';
-import { popup } from '../../../logger';
+import { popup } from '~/logger';
 import { FigmaClient } from '../../services';
 
 class DocumentHelper {
