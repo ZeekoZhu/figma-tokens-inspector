@@ -21,6 +21,7 @@ dev:
 
 start-chromium:
 	@web-ext run --source-dir extension --target chromium \
+		--no-reload \
 		--keep-profile-changes \
 		--profile-create-if-missing \
 		--chromium-profile ./.cache/chromium-profile
