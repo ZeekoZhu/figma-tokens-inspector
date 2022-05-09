@@ -1,14 +1,10 @@
-import {
-  MantineProvider,
-  Paper,
-  Tabs,
-} from '@mantine/core';
-import classnames from 'classnames';
+import { MantineProvider, Paper, Tabs } from '@mantine/core';
 import Draggable from 'react-draggable';
 import { useAppStyles } from './App.style';
 import { InspectorPage } from './pages/inspector';
 import { SettingsPage } from './pages/settings/settings-page';
 import { WheelEventHandler } from 'react';
+import { TitleBar } from '~/popup/components/title-bar';
 
 function App() {
   const { classes } = useAppStyles();
@@ -36,12 +32,5 @@ function App() {
     </MantineProvider>
   );
 }
-
-const TitleBar = forwardRef<HTMLDivElement>(({}, ref) => {
-  const { classes } = useAppStyles();
-  return (
-    <div ref={ref} className={classnames(classes.titleBar, 'drag-handle')}></div>
-  );
-});
 
 export default App;

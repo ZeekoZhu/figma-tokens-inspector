@@ -1,6 +1,6 @@
 import { createStyles } from '@mantine/core';
 
-export const useAppStyles = createStyles((theme) => ({
+export const useAppStyles = createStyles(() => ({
   root: {
     padding: 0,
     position: 'absolute',
@@ -11,10 +11,5 @@ export const useAppStyles = createStyles((theme) => ({
       width: '300px',
       minHeight: '500px',
     },
-  },
-  titleBar: {
-    cursor: 'move',
-    background: theme.colors.blue[4],
-    height: '22px',
   },
 }));
