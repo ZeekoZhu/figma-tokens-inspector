@@ -7,14 +7,10 @@ import { isDev, r } from './scripts/utils';
 import { getManifest } from './scripts/manifest';
 
 export const sharedConfig: UserConfig = {
-  root: r('src'),
   resolve: {
     alias: {
       '~/': `${r('src')}/`,
     },
-  },
-  define: {
-    '___DEV__': isDev,
   },
   optimizeDeps: {
     include: [ 'react/jsx-runtime', 'react-dom', 'webextension-polyfill' ],

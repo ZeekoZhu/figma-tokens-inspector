@@ -14,18 +14,13 @@ export async function getManifest() {
     name: 'Figma Tokens Inspector',
     version: pkg.version,
     description: 'Inspect Figma tokens',
-    icons: {
-      '16': 'assets/icons/logo.svg',
-      '48': 'assets/icons/logo.svg',
-      '128': 'assets/icons/logo.svg',
-    },
     content_scripts: [
       {
         matches: [
           'https://*.figma.com/*',
         ],
         js: [
-          'content-script/index.ts',
+          'src/content-script/index.ts',
         ],
       },
     ],

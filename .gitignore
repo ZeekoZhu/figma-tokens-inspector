@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 /.cache/
 /extension/
+dist/
+key.pem

@@ -6,18 +6,15 @@ SHELL := /bin/bash
 node_modules: package.json yarn.lock
 	yarn install --frozen-lockfile
 
-prepare: node_modules
-	@esno ./scripts/prepare.ts
-	cp -r src/assets/* extension/assets/
-
-dev-pages: node_modules
-	@vite
-
-dev-content-script: node_modules
-	@vite build --config vite.config.content.ts --mode development
-
 dev:
 	@vite
+
+crx: node_modules
+	@vite build --mode production
+	if [ ! -d ./dist ]; then
+		mkdir dist
+	fi
+	crx pack extension -o dist/extension.crx
 
 start-chromium:
 	@web-ext run --source-dir extension --target chromium \
@@ -25,3 +22,6 @@ start-chromium:
 		--keep-profile-changes \
 		--profile-create-if-missing \
 		--chromium-profile ./.cache/chromium-profile
+
+clean:
+	@rm -rf dist
