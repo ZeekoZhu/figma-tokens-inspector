@@ -24,4 +24,4 @@ start-chromium:
 		--chromium-profile ./.cache/chromium-profile
 
 clean:
-	@rm -rf dist
+	@rm -rf dist extension
