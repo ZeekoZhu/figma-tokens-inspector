@@ -3,8 +3,10 @@ import classnames from 'classnames';
 import * as Figma from 'figma-js';
 import { entries } from 'lodash-es';
 import { observer } from 'mobx-react-lite';
-import { popup } from '../../../logger';
-import { useService } from '../../bootstrap';
+
+import { popup } from '~/logger';
+import { useService } from '~/popup/bootstrap';
+
 import { useInspectorStyles } from './styles';
 
 export const InspectorPage = observer(() => {
@@ -85,8 +87,8 @@ const DesignTokenPreview =
    }: { nodeProp: string, value: string }) => {
     return (
       <Stack spacing={0}>
-        <Text size="sm" className="fti-prop-name">{nodeProp}</Text>
-        <Text size="sm" className="fti-token-name">{trimQuotes(value)}</Text>
+        <Text size="xs" className="fti-prop-name">{nodeProp}</Text>
+        <Text size="xs" className="fti-token-name">{trimQuotes(value)}</Text>
       </Stack>
     );
   };
