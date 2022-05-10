@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 
 import { r } from './utils';
 import PkgType from '../package.json';
-import { ManifestV3Export } from 'rollup-plugin-chrome-extension';
+import { ManifestV3Export } from '@crxjs/vite-plugin';
 
 export async function getManifest() {
   const pkg = await fs.readJSON(r('package.json')) as typeof PkgType;
@@ -22,7 +22,7 @@ export async function getManifest() {
     content_scripts: [
       {
         matches: [
-          '*://*/*',
+          'https://*.figma.com/*',
         ],
         js: [
           'content-script/index.ts',
@@ -33,8 +33,6 @@ export async function getManifest() {
       'tabs',
       'storage',
       'activeTab',
-      'http://*/',
-      'https://*/',
     ],
   };
 
