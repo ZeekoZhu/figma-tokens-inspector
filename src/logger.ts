@@ -1,4 +1,5 @@
 import loglevel from 'loglevel';
+import env from '~/env';
 
 const originFactory = loglevel.methodFactory;
 
@@ -17,7 +18,6 @@ export const content = loglevel.getLogger('FTI.content');
 export const bridge = loglevel.getLogger('FTI.bridge');
 export const popup = loglevel.getLogger('FTI.popup');
 
-// todo: disable debug level on production build
-content.setLevel('debug');
-bridge.setLevel('debug');
-popup.setLevel('debug');
+content.setLevel(env.logLevel);
+bridge.setLevel(env.logLevel);
+popup.setLevel(env.logLevel);

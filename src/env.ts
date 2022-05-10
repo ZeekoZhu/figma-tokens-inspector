@@ -1,14 +1,7 @@
-const forbiddenProtocols = [
-  'chrome-extension://',
-  'chrome-search://',
-  'chrome://',
-  'devtools://',
-  'edge://',
-  'https://chrome.google.com/webstore',
-]
+import { LogLevelDesc } from 'loglevel';
 
-export function isForbiddenUrl(url: string): boolean {
-  return forbiddenProtocols.some(protocol => url.startsWith(protocol))
-}
+const env = {
+  logLevel: import.meta.env.VITE_LOG_LEVEL || 'debug' as LogLevelDesc,
+};
 
-export const isFirefox = navigator.userAgent.includes('Firefox')
+export default env;
