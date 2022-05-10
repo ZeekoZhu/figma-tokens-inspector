@@ -7,7 +7,7 @@ node_modules: package.json yarn.lock
 	yarn install --frozen-lockfile
 
 dev:
-	@vite
+	@vite --mode development
 
 crx: node_modules
 	@vite build --mode production

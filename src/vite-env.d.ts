@@ -1,8 +1,8 @@
-/// <reference types="vite/client" />
 import { LogLevelDesc } from 'loglevel';
 
 interface ImportMetaEnv {
   readonly VITE_LOG_LEVEL: LogLevelDesc;
+  readonly VITE_FEATURE_TOKEN_PREVIEW: boolean;
   // more env variables...
 }
 

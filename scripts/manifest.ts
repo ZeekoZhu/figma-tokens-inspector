@@ -17,7 +17,7 @@ export async function getManifest() {
     content_scripts: [
       {
         matches: [
-          'https://*.figma.com/*',
+          'https://*.figma.com/file/*',
         ],
         js: [
           'src/content-script/index.ts',
