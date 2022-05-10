@@ -5,6 +5,7 @@ import { InspectorPage } from './pages/inspector';
 import { SettingsPage } from './pages/settings/settings-page';
 import { WheelEventHandler } from 'react';
 import { TitleBar } from '~/popup/components/title-bar';
+import { useViewportSize } from '@mantine/hooks';
 
 function App() {
   const { classes } = useAppStyles();
@@ -12,9 +13,10 @@ function App() {
   const handleWheel = useCallback<WheelEventHandler>((event) => {
     event.stopPropagation();
   }, []);
+  const { width } = useViewportSize();
   return (
     <MantineProvider>
-      <Draggable handle=".drag-handle" bounds="body" nodeRef={containerRef}>
+      <Draggable defaultPosition={{ x: width - 300, y: 48 }} handle=".drag-handle" bounds="body" nodeRef={containerRef}>
         <div ref={containerRef} className={classes.root} onWheel={handleWheel}>
           <Paper shadow="md">
             <TitleBar />
