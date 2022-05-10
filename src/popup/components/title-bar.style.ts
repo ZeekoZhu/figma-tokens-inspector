@@ -8,5 +8,8 @@ export const useTitleBarStyle = createStyles((theme) => ({
     '.title-text': {
       fontWeight: 'bold',
     },
+    '&.minimized': {
+      borderBottom: 'none',
+    }
   },
 }));
