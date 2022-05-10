@@ -4,25 +4,26 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Observable } from 'rxjs';
 import { ContentScript } from '../../events';
-import { popup } from '../../logger';
-import App from '../../popup/App';
-import { Bootstrap, Services } from '../../popup/bootstrap';
-import { FigmaClientDev } from '../../popup/services';
+import { popup } from '~/logger';
+import { Bootstrap, Services } from '~/popup/bootstrap';
+import { FigmaClient, FigmaClientDev } from '~/popup/services';
+import App from '~/popup/App';
 import {
   FigmaFileManager,
   FigmaOptionsStore,
-  GitHubOptionsStore
-} from '../../popup/stores';
-import { ContentScriptMsgTypes } from '../../popup/stores/extension-bridge';
+  GitHubOptionsStore,
+} from '~/popup/stores';
+import { ContentScriptMsgTypes } from '~/popup/stores/extension-bridge';
+import env from '~/env';
 
 export const initInspectorWidget =
   ({
      msg$,
-     onBootstrap
+     onBootstrap,
    }: { msg$: Observable<ContentScriptMsgTypes>, onBootstrap: () => void }) => {
     const services: Services = {
       githubOptions: new GitHubOptionsStore(),
-      figmaFileManager: new FigmaFileManager(new FigmaClientDev()),
+      figmaFileManager: new FigmaFileManager(env.isDev ? new FigmaClientDev() : new FigmaClient()),
       figmaOptions: new FigmaOptionsStore(),
     };
     const handleBootstrap = () => {
@@ -52,7 +53,7 @@ export const initInspectorWidget =
     document.body.appendChild(inspectorWidget);
     ReactDOM.createRoot(inspectorWidget).render(<StrictMode>
       <Bootstrap services={services} onBootstrap={handleBootstrap}>
-        <App/>
+        <App />
       </Bootstrap>
     </StrictMode>);
   };
