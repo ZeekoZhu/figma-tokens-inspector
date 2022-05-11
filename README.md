@@ -2,11 +2,6 @@
 
 Inspector for [Figma tokens](https://github.com/six7/figma-tokens), running in view only mode.
 
-**Requirement**
-* GNU make@4
-* node.js@16
-* yarn@1
-
 # Usage
 
 1. Download load extension.crx from [release page](https://github.com/ZeekoZhu/figma-tokens-inspector/releases).
@@ -18,8 +13,12 @@ Inspector for [Figma tokens](https://github.com/six7/figma-tokens), running in v
 ![image](https://user-images.githubusercontent.com/13861843/167753241-5b1a966c-3296-46bf-b2e7-4ff0526af410.png)
 
 
-
 # How to build
+
+**Requirement**
+* GNU make@4
+* node.js@16
+* yarn@1
 
 ```sh
 make crx
