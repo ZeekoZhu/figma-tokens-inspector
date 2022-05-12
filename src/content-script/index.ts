@@ -11,8 +11,16 @@ import {
 import { loadBridge } from './bridge-loader';
 import { initInspectorWidget } from './inspector-widget';
 
+function isInFigmaFile() {
+  return !!window.location.href.match(/^https:\/\/figma\.com\/file/);
+}
+
 (() => {
   log.debug('Content script loaded');
+  if (!isInFigmaFile()) {
+    log.debug('Not in figma file');
+    return;
+  }
   const $fileId = new Subject<string>();
   const $popupOpen = new Subject<void>();
   const $nodeSelected = new Subject<string[]>();
