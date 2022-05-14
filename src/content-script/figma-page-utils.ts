@@ -1,4 +1,4 @@
-import { debounceTime, map, Observable } from 'rxjs';
+import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { content as log } from '~/logger';
 
 export function observeFigmaFileChange() {
@@ -12,8 +12,8 @@ export function observeFigmaFileChange() {
     });
     return () => mutationObserver.disconnect();
   }).pipe(
-    debounceTime(500),
-    map(getFileId)
+    map(getFileId),
+    distinctUntilChanged(),
   );
 }
 
