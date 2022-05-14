@@ -2,7 +2,7 @@ import { FigmaBridge } from './events';
 import { bridge as log } from './logger';
 
 
-log.debug('bridge init');
+log.debug('bridge loaded');
 
 function notifyNodeSelected(nodeIdList: string[]) {
   window.postMessage({
@@ -10,9 +10,6 @@ function notifyNodeSelected(nodeIdList: string[]) {
     payload: nodeIdList,
   }, '*');
 }
-
-// @ts-ignore
-const figma = () => window['figma'];
 
 function* getSelfAndChildren(node: any): Generator<any, any, any> {
   yield node;
@@ -44,4 +41,15 @@ function waitForFigma() {
   }
 }
 
-waitForFigma();
+
+// @ts-ignore
+const figma = () => window['figma'];
+
+window.addEventListener('message', (event) => {
+  if (event.data.type === FigmaBridge.INIT) {
+    waitForFigma();
+  }
+});
+
+
+

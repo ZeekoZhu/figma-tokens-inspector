@@ -56,6 +56,7 @@ export const initInspectorWidget =
         services.figmaFileManager.setToken(services.figmaOptions.options.pat);
       });
       return () => {
+        popup.debug('popup closed');
         dispose();
         unsub.next();
         unsub.complete();

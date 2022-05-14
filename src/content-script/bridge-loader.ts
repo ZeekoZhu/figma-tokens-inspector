@@ -4,16 +4,21 @@ import { FigmaBridge } from '~/events';
 import { content as log } from '~/logger';
 import { Observable } from 'rxjs';
 
-export const loadBridge =
+export const loadBridgeScript = () => {
+  log.info('Loading bridge');
+  const script = document.createElement('script');
+  script.src = browser.runtime.getURL(figmaBridge);
+  script.type = 'module';
+  script.async = true;
+  document.head.appendChild(script);
+};
+
+export const connectToBridge =
   ({
      onInit,
      onNodeSelected,
    }: { onInit: () => void, onNodeSelected: (nodeIdList: string[]) => void }) => {
-    log.info('Loading bridge');
-    const script = document.createElement('script');
-    script.src = browser.runtime.getURL(figmaBridge);
-    script.type = 'module';
-    script.async = true;
+    window.postMessage({ type: FigmaBridge.INIT }, '*');
     const listener = (event: MessageEvent) => {
       if (event.data.type === FigmaBridge.INITIALIZED) {
         log.debug('Figma bridge initialized');
@@ -25,13 +30,8 @@ export const loadBridge =
       }
     };
     window.addEventListener('message', listener);
-    document.head.appendChild(script);
-    log.debug('Bridge script loaded', script.parentElement);
-
     return function () {
-      log.debug('Unloading figma bridge');
       window.removeEventListener('message', listener);
-      script.remove();
     };
   };
 
@@ -42,7 +42,7 @@ export type FigmaBridgeObservable = Observable<FigmaBridgeEvent>;
 
 export const observeFigmaBridge = (): FigmaBridgeObservable => {
   return new Observable(observer => {
-    return loadBridge({
+    return connectToBridge({
       onInit() {
         observer.next({ type: FigmaBridge.INITIALIZED });
       },

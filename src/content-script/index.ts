@@ -1,13 +1,12 @@
 import {
-  Observable,
-  shareReplay,
+  Observable, share,
   Unsubscribable,
 } from 'rxjs';
 import { ContentScript, FigmaBridge } from '../events';
 import { content as log } from '../logger';
 import { ContentScriptMsgTypes } from '~/popup/stores/extension-bridge';
 
-import { observeFigmaBridge } from './bridge-loader';
+import { loadBridgeScript, observeFigmaBridge } from './bridge-loader';
 import { initInspectorWidget } from './inspector-widget';
 import { makeAutoObservable } from 'mobx';
 import {
@@ -49,6 +48,7 @@ class FigmaInspector {
 
   init() {
     this.observePage();
+    loadBridgeScript();
     this.addDisposable(watch(
       () => 'fileId' in this.state ? this.state.fileId : null,
       (prevTeardown, fileId) => {
@@ -136,18 +136,19 @@ class FigmaInspector {
         }, { fireImmediately: true });
       const dispose2 = watch(() => 'nodeIdList' in this.state ? this.state.nodeIdList : [],
         (_t, nodeIdList) => {
-          log.debug('what the fuck', nodeIdList);
+          log.debug('send msg node selected', nodeIdList);
           sendMsg({
             type: ContentScript.NODE_SELECTED,
             payload: { nodeIdList },
           });
         });
       return () => {
+        log.debug('popup msg stream dispose');
         dispose1();
         dispose2();
       };
     }).pipe(
-      shareReplay(1),
+      share()
     );
   }
 }
