@@ -28,6 +28,7 @@ export async function getManifest() {
       'tabs',
       'storage',
       'activeTab',
+      'webNavigation',
     ],
   };
 

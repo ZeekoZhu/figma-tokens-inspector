@@ -2,8 +2,13 @@ import { autorun } from 'mobx';
 import { StrictMode } from 'react';
 
 import ReactDOM from 'react-dom/client';
-import { Observable } from 'rxjs';
-import { ContentScript } from '../../events';
+import {
+  distinctUntilChanged,
+  map,
+  Observable,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { popup } from '~/logger';
 import { Bootstrap, Services } from '~/popup/bootstrap';
 import { FigmaClient, FigmaClientDev } from '~/popup/services';
@@ -27,16 +32,23 @@ export const initInspectorWidget =
       figmaOptions: new FigmaOptionsStore(),
     };
     const handleBootstrap = () => {
-      const sub = msg$.subscribe(msg => {
-        switch (msg.type) {
-          case ContentScript.FILE_OPENED:
-            popup.debug('file opened', msg.payload);
-            services.figmaFileManager.setFileId(msg.payload.fileId);
-            return;
-          case ContentScript.NODE_SELECTED:
-            popup.debug('node selected', msg.payload);
-            services.figmaFileManager.selectNodes(msg.payload.nodeIdList);
-            return;
+      const unsub = new Subject<void>();
+      msg$.pipe(
+        map(it => 'fileId' in it.payload ? it.payload.fileId : null),
+        distinctUntilChanged(),
+        takeUntil(unsub),
+      ).subscribe(fileId => {
+        popup.debug('fileId', fileId);
+        if (fileId) {
+          services.figmaFileManager.setFileId(fileId);
+        }
+      });
+      msg$.pipe(
+        map(it => 'nodeIdList' in it.payload ? it.payload.nodeIdList : null),
+        takeUntil(unsub),
+      ).subscribe(nodeIdList => {
+        if (nodeIdList) {
+          services.figmaFileManager.selectNodes(nodeIdList);
         }
       });
       onBootstrap();
@@ -45,15 +57,21 @@ export const initInspectorWidget =
       });
       return () => {
         dispose();
-        sub.unsubscribe();
+        unsub.next();
+        unsub.complete();
       };
     };
     const inspectorWidget = document.createElement('div');
     inspectorWidget.id = 'inspector-widget';
     document.body.appendChild(inspectorWidget);
-    ReactDOM.createRoot(inspectorWidget).render(<StrictMode>
+    const root = ReactDOM.createRoot(inspectorWidget);
+    root.render(<StrictMode>
       <Bootstrap services={services} onBootstrap={handleBootstrap}>
         <App />
       </Bootstrap>
     </StrictMode>);
+    return () => {
+      root.unmount();
+      inspectorWidget.remove();
+    };
   };

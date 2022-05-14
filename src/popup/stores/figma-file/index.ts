@@ -54,12 +54,14 @@ export class FigmaFileManager {
   }
 
   setFileId(fileId: string) {
+    popup.debug(`setFileId: ${fileId}`);
     this.fileId = fileId;
     this.document = undefined;
     this.docHelper = undefined;
   }
 
   selectNodes(nodeIdList: string[]) {
+    popup.debug('selectNodes', nodeIdList);
     this.selectedNodeIdList = nodeIdList;
   }
 
