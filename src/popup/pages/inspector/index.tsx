@@ -21,7 +21,7 @@ export const InspectorPage = observer(() => {
   if (figmaFileManager.loading) {
     return (
       <Group position="center" px={16}>
-        <Loader/>
+        <Loader />
         <Text>Loading current file...</Text>
       </Group>
     );
@@ -42,7 +42,7 @@ export const InspectorPage = observer(() => {
   }
   return (
     <Stack mb={16}>
-      <NodeTokensList/>
+      <NodeTokensList />
     </Stack>
   );
 });
@@ -61,7 +61,9 @@ const NodeTokensList = observer(() => {
   );
 });
 
-const extractTokens = (node: Figma.Node) => entries(node.sharedPluginData?.tokens).filter(([key, value]) => value !== undefined && key !== 'version');
+const TOKEN_BLOCK_LIST = new Set([ 'version', 'hash' ]);
+const extractTokens = (node: Figma.Node) => entries(node.sharedPluginData?.tokens)
+  .filter(([ key, value ]) => value !== undefined && !TOKEN_BLOCK_LIST.has(key));
 
 const NodeTokensPreview = (node: Figma.Node) => {
   const tokens = extractTokens(node);
@@ -72,8 +74,8 @@ const NodeTokensPreview = (node: Figma.Node) => {
     <Stack spacing={4} className="fti-node">
       <Text size="xs" className="fti-node-name"
             title={node.name}>{node.name}</Text>
-      {tokens.map(([key, value]) =>
-        <DesignTokenPreview value={value as any} nodeProp={key} key={key}/>)}
+      {tokens.map(([ key, value ]) =>
+        <DesignTokenPreview value={value as any} nodeProp={key} key={key} />)}
     </Stack>
   );
 };
@@ -83,7 +85,7 @@ const trimQuotes = (str: string) => str.replace(/^['"]|['"]$/g, '');
 const DesignTokenPreview =
   ({
      nodeProp,
-     value
+     value,
    }: { nodeProp: string, value: string }) => {
     return (
       <Stack spacing={0}>
