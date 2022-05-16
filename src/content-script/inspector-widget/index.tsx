@@ -11,7 +11,7 @@ import {
 } from 'rxjs';
 import { popup } from '~/logger';
 import { Bootstrap, Services } from '~/popup/bootstrap';
-import { FigmaClient, FigmaClientDev } from '~/popup/services';
+import { FigmaClient } from '~/popup/services';
 import App from '~/popup/App';
 import {
   FigmaFileManager,
@@ -19,7 +19,6 @@ import {
   GitHubOptionsStore,
 } from '~/popup/stores';
 import { ContentScriptMsgTypes } from '~/popup/stores/extension-bridge';
-import env from '~/env';
 
 export const initInspectorWidget =
   ({
@@ -28,7 +27,7 @@ export const initInspectorWidget =
    }: { msg$: Observable<ContentScriptMsgTypes>, onBootstrap: () => void }) => {
     const services: Services = {
       githubOptions: new GitHubOptionsStore(),
-      figmaFileManager: new FigmaFileManager(env.isDev ? new FigmaClientDev() : new FigmaClient()),
+      figmaFileManager: new FigmaFileManager(new FigmaClient()),
       figmaOptions: new FigmaOptionsStore(),
     };
     const handleBootstrap = () => {

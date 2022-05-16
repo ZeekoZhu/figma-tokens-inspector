@@ -1,7 +1,13 @@
 import * as Figma from 'figma-js';
-import { action, makeAutoObservable, observable, reaction, runInAction } from 'mobx';
+import {
+  action,
+  makeAutoObservable,
+  observable,
+  reaction,
+  runInAction,
+} from 'mobx';
 import { popup } from '~/logger';
-import { FigmaClient } from '../../services';
+import { IFigmaClient} from '../../services';
 
 class DocumentHelper {
   nodeIdMap = new Map<string, Figma.Node>();
@@ -32,7 +38,7 @@ export class FigmaFileManager {
   selectedNodeIdList: string[] = [];
   docHelper?: DocumentHelper;
 
-  constructor(private figmaClient: FigmaClient) {
+  constructor(private figmaClient: IFigmaClient) {
     makeAutoObservable(this, {
       document: observable.ref,
       setToken: action,
@@ -46,7 +52,8 @@ export class FigmaFileManager {
     if (!this.docHelper) {
       return [];
     }
-    return this.selectedNodeIdList.map(id => this.docHelper!.getNodeById(id)!).filter(node => !!node);
+    return this.selectedNodeIdList.map(id => this.docHelper!.getNodeById(id)!)
+      .filter(node => !!node);
   }
 
   setToken(token: string) {
@@ -84,6 +91,14 @@ export class FigmaFileManager {
         this.loading = false;
       });
     }
+  }
+
+  async reload() {
+    if (!this.fileId) {
+      return;
+    }
+    await this.figmaClient.cleanCache();
+    await this.loadFile();
   }
 }
 
