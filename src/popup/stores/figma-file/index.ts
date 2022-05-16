@@ -42,6 +42,7 @@ export class FigmaFileManager {
     makeAutoObservable(this, {
       document: observable.ref,
       setToken: action,
+      docHelper: observable.ref,
     });
     reaction(() => [ this.token, this.fileId ], async () => {
       await this.loadFile();
@@ -82,9 +83,9 @@ export class FigmaFileManager {
       });
       const result = await this.figmaClient.getFile(this.fileId, this.token);
       runInAction(() => {
-        this.document = result;
+        this.document = result.document;
         popup.debug('Plugin data', result);
-        this.docHelper = new DocumentHelper(result);
+        this.docHelper = new DocumentHelper(result.document);
       });
     } finally {
       runInAction(() => {

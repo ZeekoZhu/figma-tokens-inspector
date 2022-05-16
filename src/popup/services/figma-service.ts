@@ -13,8 +13,14 @@ export class InternalFigmaClient {
   }
 }
 
+export interface CachedDocument {
+  fileId: string;
+  document: Figma.Document;
+  cacheTime: number;
+}
+
 export interface IFigmaClient {
-  getFile(fileId: string, token: string): Promise<Figma.Document>;
+  getFile(fileId: string, token: string): Promise<CachedDocument>;
 
   cleanCache(): Promise<void>;
 }
@@ -22,14 +28,19 @@ export interface IFigmaClient {
 export class FigmaClient implements IFigmaClient {
   impl: InternalFigmaClient = new InternalFigmaClient();
 
-  async getFile(fileId: string, token: string): Promise<Figma.Document> {
-    const result = await localforage.getItem(`fti:${token}:${fileId}`) as Figma.Document;
-    if (result) {
+  async getFile(fileId: string, token: string): Promise<CachedDocument> {
+    const result = await localforage.getItem(`fti:${token}:${fileId}`) as CachedDocument;
+    if (result && 'cacheTime' in result) {
       return result;
     }
     const file = await this.impl.getFile(fileId, token);
-    await localforage.setItem(`fti:${token}:${fileId}`, file);
-    return file;
+    const cached = {
+      fileId,
+      document: file,
+      cacheTime: Date.now(),
+    };
+    await localforage.setItem(`fti:${token}:${fileId}`, cached);
+    return cached;
   }
 
   async cleanCache() {
