@@ -1,4 +1,5 @@
-import { Group, Loader, Stack, Text } from '@mantine/core';
+import { Icon } from '@iconify/react';
+import { ActionIcon, Group, Loader, Stack, Text } from '@mantine/core';
 import classnames from 'classnames';
 import * as Figma from 'figma-js';
 import { entries } from 'lodash-es';
@@ -7,7 +8,7 @@ import { observer } from 'mobx-react-lite';
 import { popup } from '~/logger';
 import { useService } from '~/popup/bootstrap';
 
-import { useInspectorStyles } from './styles';
+import { useDocumentStatusBarStyles, useInspectorStyles } from './styles';
 
 export const InspectorPage = observer(() => {
   const figmaFileManager = useService('figmaFileManager');
@@ -18,7 +19,7 @@ export const InspectorPage = observer(() => {
       </Group>
     );
   }
-  if (figmaFileManager.loading) {
+  if (figmaFileManager.loading && !figmaFileManager.isReady) {
     return (
       <Group position="center" px={16}>
         <Loader />
@@ -26,6 +27,32 @@ export const InspectorPage = observer(() => {
       </Group>
     );
   }
+  return <Stack>
+    <DocumentStatusBar />
+    <DocumentInspector />
+  </Stack>;
+});
+
+const DocumentStatusBar = observer(() => {
+  const figmaFileManager = useService('figmaFileManager');
+  const { classes } = useDocumentStatusBarStyles();
+  if (!figmaFileManager.isReady) {
+    return null;
+  }
+  return (<Group position="apart" px={16}>
+    <Text className={classes.label} size="xs">Last
+      update: {figmaFileManager.lastUpdateTimeString}</Text>
+    {figmaFileManager.loading ?
+      <Loader size="xs" /> :
+      <ActionIcon size="xs" onClick={() => figmaFileManager.reload()}>
+        <Icon fontSize={12} icon="tabler:cloud-download" />
+      </ActionIcon>}
+  </Group>);
+});
+
+const DocumentInspector = observer(() => {
+  const figmaFileManager = useService('figmaFileManager');
+
   if (figmaFileManager.selectedNodeIdList.length === 0) {
     return (
       <Group position="center" px={16}>

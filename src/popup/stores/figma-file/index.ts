@@ -6,8 +6,13 @@ import {
   reaction,
   runInAction,
 } from 'mobx';
+import * as dayjs from 'dayjs';
+import * as relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
+
 import { popup } from '~/logger';
-import { IFigmaClient} from '../../services';
+import { IFigmaClient } from '../../services';
 
 class DocumentHelper {
   nodeIdMap = new Map<string, Figma.Node>();
@@ -37,6 +42,18 @@ export class FigmaFileManager {
   loading = false;
   selectedNodeIdList: string[] = [];
   docHelper?: DocumentHelper;
+  private lastUpdateTime?: number;
+
+  get lastUpdateTimeString() {
+    if (!this.lastUpdateTime) {
+      return 'Never';
+    }
+    return dayjs(this.lastUpdateTime).fromNow();
+  }
+
+  get isReady() {
+    return this.document != null;
+  }
 
   constructor(private figmaClient: IFigmaClient) {
     makeAutoObservable(this, {
@@ -84,6 +101,7 @@ export class FigmaFileManager {
       const result = await this.figmaClient.getFile(this.fileId, this.token);
       runInAction(() => {
         this.document = result.document;
+        this.lastUpdateTime = result.cacheTime;
         popup.debug('Plugin data', result);
         this.docHelper = new DocumentHelper(result.document);
       });

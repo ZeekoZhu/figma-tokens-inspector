@@ -9,7 +9,7 @@ export const useInspectorStyles = createStyles((theme) => ({
       '&:not(:last-child)': {
         paddingBottom: theme.spacing.md,
         borderBottom: `1px solid ${theme.colors.gray[1]}`,
-      }
+      },
     },
     '.fti-node-name': {
       whiteSpace: 'nowrap',
@@ -19,13 +19,19 @@ export const useInspectorStyles = createStyles((theme) => ({
     '.fti-prop-name': {
       width: '100px',
       fontFamily: theme.fontFamilyMonospace,
-      color: theme.colors.gray[5]
+      color: theme.colors.gray[5],
     },
     '.fti-token-name': {
       fontFamily: theme.fontFamilyMonospace,
       color: theme.colors.gray[9],
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-    }
-  }
+    },
+  },
+}));
+
+export const useDocumentStatusBarStyles = createStyles((theme) => ({
+  label: {
+    color: theme.colors.gray[5],
+  },
 }));
