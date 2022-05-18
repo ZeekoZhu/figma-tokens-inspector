@@ -6,10 +6,6 @@ import {
   reaction,
   runInAction,
 } from 'mobx';
-import * as dayjs from 'dayjs';
-import * as relativeTime from 'dayjs/plugin/relativeTime';
-
-dayjs.extend(relativeTime);
 
 import { popup } from '~/logger';
 import { IFigmaClient } from '../../services';
@@ -42,14 +38,7 @@ export class FigmaFileManager {
   loading = false;
   selectedNodeIdList: string[] = [];
   docHelper?: DocumentHelper;
-  private lastUpdateTime?: number;
-
-  get lastUpdateTimeString() {
-    if (!this.lastUpdateTime) {
-      return 'Never';
-    }
-    return dayjs(this.lastUpdateTime).fromNow();
-  }
+  lastUpdateTime?: number;
 
   get isReady() {
     return this.document != null;

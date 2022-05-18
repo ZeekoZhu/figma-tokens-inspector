@@ -9,6 +9,11 @@ import { popup } from '~/logger';
 import { useService } from '~/popup/bootstrap';
 
 import { useDocumentStatusBarStyles, useInspectorStyles } from './styles';
+import { useRafInterval, useUpdate } from 'ahooks';
+import dayjs from 'dayjs/esm';
+import relativeTime from 'dayjs/esm/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 export const InspectorPage = observer(() => {
   const figmaFileManager = useService('figmaFileManager');
@@ -36,12 +41,18 @@ export const InspectorPage = observer(() => {
 const DocumentStatusBar = observer(() => {
   const figmaFileManager = useService('figmaFileManager');
   const { classes } = useDocumentStatusBarStyles();
+  const update = useUpdate();
+  useRafInterval(() => {
+    update();
+  }, 1000 * 60);
+  const lastUpdate = figmaFileManager.lastUpdateTime
+    ? `Tokens fetched at ${dayjs(figmaFileManager.lastUpdateTime).fromNow()}`
+    : 'Click right button to fetch tokens';
   if (!figmaFileManager.isReady) {
     return null;
   }
   return (<Group position="apart" px={16}>
-    <Text className={classes.label} size="xs">Last
-      update: {figmaFileManager.lastUpdateTimeString}</Text>
+    <Text className={classes.label} size="xs">{lastUpdate}</Text>
     {figmaFileManager.loading ?
       <Loader size="xs" /> :
       <ActionIcon size="xs" onClick={() => figmaFileManager.reload()}>
