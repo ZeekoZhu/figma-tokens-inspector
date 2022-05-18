@@ -32,13 +32,17 @@ class DocumentHelper {
 }
 
 export class FigmaFileManager {
-  token?: string;
+  authToken?: string;
   fileId?: string;
   document?: Figma.Document;
   loading = false;
   selectedNodeIdList: string[] = [];
   docHelper?: DocumentHelper;
   lastUpdateTime?: number;
+
+  get noToken() {
+    return !this.authToken;
+  }
 
   get isReady() {
     return this.document != null;
@@ -50,7 +54,7 @@ export class FigmaFileManager {
       setToken: action,
       docHelper: observable.ref,
     });
-    reaction(() => [ this.token, this.fileId ], async () => {
+    reaction(() => [ this.authToken, this.fileId ], async () => {
       await this.loadFile();
     });
   }
@@ -64,7 +68,7 @@ export class FigmaFileManager {
   }
 
   setToken(token: string) {
-    this.token = token;
+    this.authToken = token;
   }
 
   setFileId(fileId: string) {
@@ -80,14 +84,14 @@ export class FigmaFileManager {
   }
 
   async loadFile() {
-    if (!this.token || !this.fileId) {
+    if (!this.authToken || !this.fileId) {
       return;
     }
     try {
       runInAction(() => {
         this.loading = true;
       });
-      const result = await this.figmaClient.getFile(this.fileId, this.token);
+      const result = await this.figmaClient.getFile(this.fileId, this.authToken);
       runInAction(() => {
         this.document = result.document;
         this.lastUpdateTime = result.cacheTime;

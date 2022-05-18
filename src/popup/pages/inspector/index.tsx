@@ -47,7 +47,7 @@ const DocumentStatusBar = observer(() => {
   }, 1000 * 60);
   const lastUpdate = figmaFileManager.lastUpdateTime
     ? `Tokens fetched at ${dayjs(figmaFileManager.lastUpdateTime).fromNow()}`
-    : 'Click right button to fetch tokens';
+    : 'Click the button right to fetch tokens';
   if (!figmaFileManager.isReady) {
     return null;
   }
@@ -63,6 +63,14 @@ const DocumentStatusBar = observer(() => {
 
 const DocumentInspector = observer(() => {
   const figmaFileManager = useService('figmaFileManager');
+
+  if (figmaFileManager.noToken) {
+    return (
+      <Group position="center" px={16}>
+        <Text>Please click "Settings" tab to setup Figma Access Token</Text>
+      </Group>
+    );
+  }
 
   if (figmaFileManager.selectedNodeIdList.length === 0) {
     return (
