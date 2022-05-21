@@ -2,7 +2,6 @@ import { Icon } from '@iconify/react';
 import { ActionIcon, Group, Loader, Stack, Text } from '@mantine/core';
 import classnames from 'classnames';
 import * as Figma from 'figma-js';
-import { entries } from 'lodash-es';
 import { observer } from 'mobx-react-lite';
 
 import { popup } from '~/logger';
@@ -12,6 +11,7 @@ import { useDocumentStatusBarStyles, useInspectorStyles } from './styles';
 import { useRafInterval, useUpdate } from 'ahooks';
 import dayjs from 'dayjs/esm';
 import relativeTime from 'dayjs/esm/plugin/relativeTime';
+import { extractTokens } from '~/popup/pages/inspector/token-extractor';
 
 dayjs.extend(relativeTime);
 
@@ -107,10 +107,6 @@ const NodeTokensList = observer(() => {
   );
 });
 
-const TOKEN_BLOCK_LIST = new Set([ 'version', 'hash' ]);
-const extractTokens = (node: Figma.Node) => entries(node.sharedPluginData?.tokens)
-  .filter(([ key, value ]) => value !== undefined && !TOKEN_BLOCK_LIST.has(key));
-
 const NodeTokensPreview = (node: Figma.Node) => {
   const tokens = extractTokens(node);
   if (tokens.length === 0) {
@@ -120,13 +116,11 @@ const NodeTokensPreview = (node: Figma.Node) => {
     <Stack spacing={4} className="fti-node">
       <Text size="xs" className="fti-node-name"
             title={node.name}>{node.name}</Text>
-      {tokens.map(([ key, value ]) =>
+      {tokens.map(({ key, value }) =>
         <DesignTokenPreview value={value as any} nodeProp={key} key={key} />)}
     </Stack>
   );
 };
-
-const trimQuotes = (str: string) => str.replace(/^['"]|['"]$/g, '');
 
 const DesignTokenPreview =
   ({
@@ -136,7 +130,7 @@ const DesignTokenPreview =
     return (
       <Stack spacing={0}>
         <Text size="xs" className="fti-prop-name">{nodeProp}</Text>
-        <Text size="xs" className="fti-token-name">{trimQuotes(value)}</Text>
+        <Text size="xs" className="fti-token-name">{value}</Text>
       </Stack>
     );
   };
