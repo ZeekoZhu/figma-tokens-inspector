@@ -1,17 +1,19 @@
 import { Icon } from '@iconify/react';
 import { ActionIcon, Group, Loader, Stack, Text } from '@mantine/core';
 import classnames from 'classnames';
-import * as Figma from 'figma-js';
 import { observer } from 'mobx-react-lite';
 
-import { popup } from '~/logger';
 import { useService } from '~/popup/bootstrap';
 
 import { useDocumentStatusBarStyles, useInspectorStyles } from './styles';
 import { useRafInterval, useUpdate } from 'ahooks';
 import dayjs from 'dayjs/esm';
 import relativeTime from 'dayjs/esm/plugin/relativeTime';
-import { extractTokens } from '~/popup/pages/inspector/token-extractor';
+import {
+  extractTokens, InspectorToken,
+  InspectResult,
+} from '~/popup/pages/inspector/token-extractor';
+import { concat, sumBy } from 'lodash-es';
 
 dayjs.extend(relativeTime);
 
@@ -79,7 +81,11 @@ const DocumentInspector = observer(() => {
       </Group>
     );
   }
-  if (figmaFileManager.selectedNodes.flatMap(extractTokens).length === 0) {
+
+  const nodeList = figmaFileManager.selectedNodes.map(it =>
+    extractTokens(it, figmaFileManager.docHelper!));
+
+  if (sumBy(nodeList, 'totalTokens') === 0) {
     return (
       <Group position="center" px={16}>
         <Text>No token found in selected nodes</Text>
@@ -88,50 +94,52 @@ const DocumentInspector = observer(() => {
   }
   return (
     <Stack mb={16}>
-      <NodeTokensList />
+      <NodeTokensList nodeList={nodeList} />
     </Stack>
   );
 });
 
-const NodeTokensList = observer(() => {
+const NodeTokensList = observer(({ nodeList }: { nodeList: InspectResult[] }) => {
   const { classes, theme } = useInspectorStyles();
-  const figmaFileManager = useService('figmaFileManager');
-  const nodes = figmaFileManager.selectedNodes;
-  popup.debug('nodes', nodes);
   return (
     <Stack className={classnames(classes.tokenList, 'fti-node-list')}
            px={theme.spacing.md}>
-      {nodes.map((node) =>
-        <NodeTokensPreview key={node.id} {...node} />)}
+      {nodeList.map((result) =>
+        <NodeTokensPreview key={result.node.id} result={result} />)}
     </Stack>
   );
 });
 
-const NodeTokensPreview = (node: Figma.Node) => {
-  const tokens = extractTokens(node);
-  if (tokens.length === 0) {
+const NodeTokensPreview = ({ result }: { result: InspectResult }) => {
+  const { tokens, styles, totalTokens, node } = result;
+  if (totalTokens === 0) {
     return null;
   }
   return (
     <Stack spacing={4} className="fti-node">
       <Text size="xs" className="fti-node-name"
             title={node.name}>{node.name}</Text>
-      {tokens.map(({ name, value }) =>
-        <DesignTokenPreview value={value as any} nodeProp={name} key={name} />)}
+      {concat(tokens, styles).map(({ name, value, source }) =>
+        <DesignTokenPreview
+          value={value as any}
+          name={name}
+          source={source}
+          key={name + source} />)}
     </Stack>
   );
 };
 
 const DesignTokenPreview =
   ({
-     nodeProp,
+     name,
      value,
-   }: { nodeProp: string, value: string }) => {
+     source,
+   }: InspectorToken) => {
     return (
-      <Stack spacing={0}>
+      <Stack spacing={0} title={source}>
         <Group position="left" spacing="xs" className="fti-prop-name" noWrap>
-          <Text size="xs">{nodeProp}</Text>
-          <Icon icon="clarity:plugin-line" />
+          <Icon icon={source === 'figma-token' ? 'clarity:plugin-line' : 'ph:figma-logo'} />
+          <Text size="xs">{name}</Text>
         </Group>
         <Text size="xs" className="fti-token-name">{value}</Text>
       </Stack>

@@ -1,4 +1,3 @@
-import * as Figma from 'figma-js';
 import {
   action,
   makeAutoObservable,
@@ -9,32 +8,7 @@ import {
 
 import { popup } from '~/logger';
 import { IFigmaClient } from '../../services';
-import { get } from 'lodash-es';
-
-class DocumentHelper {
-  nodeIdMap = new Map<string, Figma.Node>();
-
-  private buildNodeIdMap(node: Figma.Node) {
-    this.nodeIdMap.set(node.id, node);
-    if ('children' in node) {
-      for (let child of node.children) {
-        this.buildNodeIdMap(child);
-      }
-    }
-  }
-
-  constructor(public file: Figma.FileResponse) {
-    this.buildNodeIdMap(file.document);
-  }
-
-  getNodeById(id: string) {
-    return this.nodeIdMap.get(id);
-  }
-
-  getStyleById(id: string): Figma.Style | undefined {
-    return get(this.file.styles, id);
-  }
-}
+import { DocumentHelper } from '~/popup/stores/figma-file/document-helper';
 
 export class FigmaFileManager {
   authToken?: string;

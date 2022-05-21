@@ -1,5 +1,8 @@
 import * as Figma from 'figma-js';
 import { entries } from 'lodash-es';
+import { popup } from '~/logger';
+
+import { DocumentHelper } from '~/popup/stores';
 
 const TOKEN_BLOCK_LIST = new Set([ 'version', 'hash' ]);
 
@@ -11,8 +14,14 @@ export interface InspectorToken {
   source: 'figma-token' | 'figma-style';
 }
 
+export interface InspectResult {
+  node: Figma.Node;
+  tokens: InspectorToken[];
+  styles: InspectorToken[];
+  totalTokens: number;
+}
+
 function getFigmaTokens(node: Figma.Node) {
-  console.log('getFigmaTokens', node);
   return entries(node.sharedPluginData?.tokens)
     .filter(([ key, value ]) => value != null && !TOKEN_BLOCK_LIST.has(key))
     .map(([ key, value ]) => ({
@@ -22,8 +31,30 @@ function getFigmaTokens(node: Figma.Node) {
     } as InspectorToken));
 }
 
-export const extractTokens = (node: Figma.Node) => {
-  return [
-    ...getFigmaTokens(node),
-  ];
-};
+function getFigmaStyles(
+  node: Figma.Node,
+  getStyleName: (id: string) => string | undefined) {
+  popup.log('getFigmaStyles', node.id);
+  if ('styles' in node) {
+    return entries(node.styles)
+      .map(([ key, value ]) => ({
+        name: key,
+        value: getStyleName(value) || `unknown style: ${key}`,
+        source: 'figma-style',
+      } as InspectorToken));
+  }
+  return [];
+}
+
+export const extractTokens =
+  (node: Figma.Node,
+   docHelper: DocumentHelper): InspectResult => {
+    const tokens = getFigmaTokens(node);
+    const styles = getFigmaStyles(node, (id) => docHelper.getStyleById(id)?.name);
+    return {
+      node,
+      tokens: tokens,
+      styles: styles,
+      totalTokens: tokens.length + styles.length,
+    };
+  };
