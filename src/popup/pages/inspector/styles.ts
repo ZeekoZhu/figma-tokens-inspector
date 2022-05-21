@@ -20,6 +20,7 @@ export const useInspectorStyles = createStyles((theme) => ({
       width: '100px',
       fontFamily: theme.fontFamilyMonospace,
       color: theme.colors.gray[5],
+      fontSize: theme.fontSizes.xs,
     },
     '.fti-token-name': {
       fontFamily: theme.fontFamilyMonospace,

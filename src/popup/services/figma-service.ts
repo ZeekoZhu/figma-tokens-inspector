@@ -2,21 +2,24 @@ import * as Figma from 'figma-js';
 import * as localforage from 'localforage';
 
 export class InternalFigmaClient {
-  async getFile(fileId: string, token: string): Promise<Figma.Document> {
+  async getFile(fileId: string, token: string): Promise<Figma.FileResponse> {
     const client = Figma.Client({
       personalAccessToken: token,
     });
     const resp = await client.file(fileId, {
       plugin_data: 'shared',
     });
-    return resp.data.document;
+    return resp.data;
   }
 }
 
+const CacheVersion = '2';
+
 export interface CachedDocument {
   fileId: string;
-  document: Figma.Document;
+  file: Figma.FileResponse;
   cacheTime: number;
+  version: typeof CacheVersion;
 }
 
 export interface IFigmaClient {
@@ -30,15 +33,16 @@ export class FigmaClient implements IFigmaClient {
 
   async getFile(fileId: string, token: string): Promise<CachedDocument> {
     const result = await localforage.getItem(`fti:${token}:${fileId}`) as CachedDocument;
-    if (result && 'cacheTime' in result) {
+    if (result && result.version === CacheVersion) {
       return result;
     }
     const file = await this.impl.getFile(fileId, token);
     const cached = {
       fileId,
-      document: file,
+      file,
       cacheTime: Date.now(),
-    };
+      version: CacheVersion,
+    } as const;
     await localforage.setItem(`fti:${token}:${fileId}`, cached);
     return cached;
   }

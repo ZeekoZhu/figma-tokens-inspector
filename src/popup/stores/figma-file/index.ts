@@ -9,11 +9,12 @@ import {
 
 import { popup } from '~/logger';
 import { IFigmaClient } from '../../services';
+import { get } from 'lodash-es';
 
 class DocumentHelper {
   nodeIdMap = new Map<string, Figma.Node>();
 
-  buildNodeIdMap(node: Figma.Node) {
+  private buildNodeIdMap(node: Figma.Node) {
     this.nodeIdMap.set(node.id, node);
     if ('children' in node) {
       for (let child of node.children) {
@@ -22,19 +23,22 @@ class DocumentHelper {
     }
   }
 
-  constructor(public doc: Figma.Document) {
-    this.buildNodeIdMap(doc);
+  constructor(public file: Figma.FileResponse) {
+    this.buildNodeIdMap(file.document);
   }
 
   getNodeById(id: string) {
     return this.nodeIdMap.get(id);
+  }
+
+  getStyleById(id: string): Figma.Style | undefined {
+    return get(this.file.styles, id);
   }
 }
 
 export class FigmaFileManager {
   authToken?: string;
   fileId?: string;
-  document?: Figma.Document;
   loading = false;
   selectedNodeIdList: string[] = [];
   docHelper?: DocumentHelper;
@@ -45,12 +49,11 @@ export class FigmaFileManager {
   }
 
   get isReady() {
-    return this.document != null;
+    return this.docHelper != null;
   }
 
   constructor(private figmaClient: IFigmaClient) {
     makeAutoObservable(this, {
-      document: observable.ref,
       setToken: action,
       docHelper: observable.ref,
     });
@@ -74,7 +77,6 @@ export class FigmaFileManager {
   setFileId(fileId: string) {
     popup.debug(`setFileId: ${fileId}`);
     this.fileId = fileId;
-    this.document = undefined;
     this.docHelper = undefined;
   }
 
@@ -91,12 +93,12 @@ export class FigmaFileManager {
       runInAction(() => {
         this.loading = true;
       });
-      const result = await this.figmaClient.getFile(this.fileId, this.authToken);
+      const result = await this.figmaClient.getFile(this.fileId,
+        this.authToken);
       runInAction(() => {
-        this.document = result.document;
         this.lastUpdateTime = result.cacheTime;
         popup.debug('Plugin data', result);
-        this.docHelper = new DocumentHelper(result.document);
+        this.docHelper = new DocumentHelper(result.file);
       });
     } finally {
       runInAction(() => {

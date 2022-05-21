@@ -116,8 +116,8 @@ const NodeTokensPreview = (node: Figma.Node) => {
     <Stack spacing={4} className="fti-node">
       <Text size="xs" className="fti-node-name"
             title={node.name}>{node.name}</Text>
-      {tokens.map(({ key, value }) =>
-        <DesignTokenPreview value={value as any} nodeProp={key} key={key} />)}
+      {tokens.map(({ name, value }) =>
+        <DesignTokenPreview value={value as any} nodeProp={name} key={name} />)}
     </Stack>
   );
 };
@@ -129,7 +129,10 @@ const DesignTokenPreview =
    }: { nodeProp: string, value: string }) => {
     return (
       <Stack spacing={0}>
-        <Text size="xs" className="fti-prop-name">{nodeProp}</Text>
+        <Group position="left" spacing="xs" className="fti-prop-name" noWrap>
+          <Text size="xs">{nodeProp}</Text>
+          <Icon icon="clarity:plugin-line" />
+        </Group>
         <Text size="xs" className="fti-token-name">{value}</Text>
       </Stack>
     );
