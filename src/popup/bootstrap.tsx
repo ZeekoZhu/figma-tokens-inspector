@@ -2,13 +2,15 @@ import { createContext, ReactNode, useContext, useEffect } from 'react';
 import {
   FigmaFileManager,
   FigmaOptionsStore,
-  GitHubOptionsStore
+  GitHubOptionsStore,
+  InspectorOptionsStore,
 } from './stores';
 
 export interface Services {
   figmaFileManager: FigmaFileManager;
   figmaOptions: FigmaOptionsStore;
   githubOptions: GitHubOptionsStore;
+  inspectorOptions: InspectorOptionsStore;
 }
 
 const ServicesContext = createContext<Services>(null as any as Services);
@@ -17,7 +19,7 @@ export const Bootstrap =
   ({
      children,
      services,
-     onBootstrap
+     onBootstrap,
    }: { children: ReactNode, services: Services, onBootstrap: () => () => void }) => {
     useEffect(() => {
       return onBootstrap();

@@ -5,6 +5,7 @@ export const optionStorage = new OptionsSync(
     defaults: {
       githubOptions: '{}',
       figmaOptions: '{}',
+      inspectorOptions: '{}',
     },
     storageType: 'local',
   }

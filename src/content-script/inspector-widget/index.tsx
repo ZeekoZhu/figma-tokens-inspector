@@ -16,7 +16,7 @@ import App from '~/popup/App';
 import {
   FigmaFileManager,
   FigmaOptionsStore,
-  GitHubOptionsStore,
+  GitHubOptionsStore, InspectorOptionsStore,
 } from '~/popup/stores';
 import { ContentScriptMsgTypes } from '~/popup/stores/extension-bridge';
 
@@ -29,6 +29,7 @@ export const initInspectorWidget =
       githubOptions: new GitHubOptionsStore(),
       figmaFileManager: new FigmaFileManager(new FigmaClient()),
       figmaOptions: new FigmaOptionsStore(),
+      inspectorOptions: new InspectorOptionsStore(),
     };
     const handleBootstrap = () => {
       const unsub = new Subject<void>();

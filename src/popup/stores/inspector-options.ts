@@ -24,7 +24,7 @@ export class InspectorOptionsStore {
       }
     })();
     reaction(() => this.options, () => {
-      void optionStorage.set({ figmaOptions: JSON.stringify(this.options) });
+      void optionStorage.set({ inspectorOptions: JSON.stringify(this.options) });
     }, { fireImmediately: false });
   }
 

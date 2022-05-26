@@ -65,6 +65,7 @@ const DocumentStatusBar = observer(() => {
 
 const DocumentInspector = observer(() => {
   const figmaFileManager = useService('figmaFileManager');
+  const inspectorOptions = useService('inspectorOptions');
 
   if (figmaFileManager.noToken) {
     return (
@@ -83,7 +84,7 @@ const DocumentInspector = observer(() => {
   }
 
   const nodeList = figmaFileManager.selectedNodes.map(it =>
-    extractTokens(it, figmaFileManager.docHelper!));
+    extractTokens(it, figmaFileManager.docHelper!, inspectorOptions.options));
 
   if (sumBy(nodeList, 'totalTokens') === 0) {
     return (

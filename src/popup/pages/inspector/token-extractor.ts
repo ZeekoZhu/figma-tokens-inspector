@@ -1,8 +1,8 @@
 import * as Figma from 'figma-js';
-import { entries } from 'lodash-es';
+import { entries, every } from 'lodash-es';
 import { popup } from '~/logger';
 
-import { DocumentHelper } from '~/popup/stores';
+import { DocumentHelper, InspectorOptionsType } from '~/popup/stores';
 
 const TOKEN_BLOCK_LIST = new Set([ 'version', 'hash' ]);
 
@@ -46,11 +46,47 @@ function getFigmaStyles(
   return [];
 }
 
+const STYLE_TO_TOKEN_NAME = {
+  fill: 'fill',
+  fills: 'fill',
+  stroke: 'stroke',
+  text: 'typography',
+  effect: 'boxShadow',
+  strokes: 'border'
+} as Record<string, string>;
+
+function getStyleTokens(
+  node: Figma.Node,
+  docHelper: DocumentHelper,
+  tokens: InspectorToken[],
+  {
+    showStyles,
+    mergeWithTokens,
+  }: InspectorOptionsType) {
+  let styles: InspectorToken[] = [];
+  if (showStyles) {
+    styles = getFigmaStyles(node, (id) => docHelper.getStyleById(id)?.name);
+  }
+  if (mergeWithTokens) {
+    styles = styles.filter(s => {
+      const tokenName = STYLE_TO_TOKEN_NAME[s.name];
+      popup.log('getStyleTokens', s.name, tokenName);
+      return !tokenName || every(tokens, t => t.name !== tokenName);
+    });
+  }
+  return styles;
+}
+
 export const extractTokens =
   (node: Figma.Node,
-   docHelper: DocumentHelper): InspectResult => {
+   docHelper: DocumentHelper,
+   inspectorOptions: InspectorOptionsType): InspectResult => {
     const tokens = getFigmaTokens(node);
-    const styles = getFigmaStyles(node, (id) => docHelper.getStyleById(id)?.name);
+    const styles = getStyleTokens(
+      node,
+      docHelper,
+      tokens,
+      inspectorOptions);
     return {
       node,
       tokens: tokens,
