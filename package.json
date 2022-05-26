@@ -41,7 +41,7 @@
     "kolorist": "^1.5.1",
     "typescript": "^4.6.3",
     "unplugin-auto-import": "^0.7.1",
-    "vite": "^2.9.5",
+    "vite": "^2.9.9",
     "web-ext": "^6.8.0"
   },
   "volta": {
