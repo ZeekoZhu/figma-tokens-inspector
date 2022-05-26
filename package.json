@@ -1,7 +1,7 @@
 {
   "name": "figma-tokens-inspector",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {
     "@iconify/react": "^3.2.1",
     "@mantine/core": "^4.2.2",
