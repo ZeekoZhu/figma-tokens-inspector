@@ -255,10 +255,10 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@crxjs/vite-plugin@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@crxjs/vite-plugin/-/vite-plugin-1.0.3.tgz#61cd3df7a0aab5e25beab88623128323883ca07f"
-  integrity sha512-4hxeBpRKXw7q70Y4lI7O6vaxmXqr34Vqt3u7KMoiW+Yl4o9brgUj/oTPnM/U+en5cwBoRmdm1U+T5A+mowm9Og==
+"@crxjs/vite-plugin@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@crxjs/vite-plugin/-/vite-plugin-1.0.5.tgz#d88db406f15e11b142b9f6d5b3a71c277b3537d1"
+  integrity sha512-obT09LzbwQwym3rVNt+kyhKNqtI48ij0GpSvvf0lPc13a9T0Fk4elsuv+OugHpn5qFfJAdYG6+1EzBOJeZKITA==
   dependencies:
     "@rollup/pluginutils" "^4.1.2"
     "@webcomponents/custom-elements" "^1.5.0"
@@ -3908,14 +3908,7 @@ rimraf@~2.4.0:
   dependencies:
     glob "^6.0.1"
 
-rollup@^2.59.0:
-  version "2.70.2"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.70.2.tgz#808d206a8851628a065097b7ba2053bd83ba0c0d"
-  integrity sha512-EitogNZnfku65I1DD5Mxe8JYRUCy0hkK5X84IlDtUs+O6JRMpRciXTzyCUuX11b5L5pvjH+OmFXiQ3XjabcXgg==
-  optionalDependencies:
-    fsevents "~2.3.2"
-
-rollup@^2.70.2:
+rollup@^2.59.0, rollup@^2.70.2:
   version "2.72.1"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.72.1.tgz#861c94790537b10008f0ca0fbc60e631aabdd045"
   integrity sha512-NTc5UGy/NWFGpSqF1lFY8z9Adri6uhyMLI6LvPAXdBKoPRFhIIiBUpt+Qg2awixqO3xvzSijjhnb4+QEZwJmxA==
