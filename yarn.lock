@@ -255,10 +255,10 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@crxjs/vite-plugin@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@crxjs/vite-plugin/-/vite-plugin-1.0.5.tgz#d88db406f15e11b142b9f6d5b3a71c277b3537d1"
-  integrity sha512-obT09LzbwQwym3rVNt+kyhKNqtI48ij0GpSvvf0lPc13a9T0Fk4elsuv+OugHpn5qFfJAdYG6+1EzBOJeZKITA==
+"@crxjs/vite-plugin@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@crxjs/vite-plugin/-/vite-plugin-1.0.8.tgz#c6e31c1ff2b0609b9f7720ba5bcc2f1264581208"
+  integrity sha512-bIRbnaUpal5Yb6dCVkewDBs0oOZgoeg3HenIyGykomOtPyfcI6DNMD1w9G32cc8rXxONe0QwnRYzxzTIYJrTkg==
   dependencies:
     "@rollup/pluginutils" "^4.1.2"
     "@webcomponents/custom-elements" "^1.5.0"
@@ -769,10 +769,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^18.0.0":
-  version "18.0.8"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.8.tgz#a051eb380a9fbcaa404550543c58e1cf5ce4ab87"
-  integrity sha512-+j2hk9BzCOrrOSJASi5XiOyBbERk9jG5O73Ya4M0env5Ixi6vUNli4qy994AINcEF+1IEHISYFfIT4zwr++LKw==
+"@types/react@*", "@types/react@^18.0.12":
+  version "18.0.12"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.12.tgz#cdaa209d0a542b3fcf69cf31a03976ec4cdd8840"
+  integrity sha512-duF1OTASSBQtcigUvhuiTB1Ya3OvSy+xORCiEf20H0P0lzx+/KeVsA99U5UjLXSbyo1DRJDlLKqTeM1ngosqtg==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
