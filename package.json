@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.1",
   "dependencies": {
-    "@iconify/react": "^3.2.1",
+    "@iconify/react": "^3.2.2",
     "@mantine/core": "^4.2.2",
     "@mantine/form": "^4.2.8",
     "@mantine/hooks": "^4.2.2",
