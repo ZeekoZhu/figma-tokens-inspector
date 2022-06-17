@@ -15,7 +15,7 @@
     "localforage": "^1.10.0",
     "lodash-es": "^4.17.21",
     "loglevel": "^1.8.0",
-    "mobx": "^6.5.0",
+    "mobx": "^6.6.0",
     "mobx-react-lite": "^3.4.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
